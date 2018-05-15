@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  traccar:
+    # image: traccar/traccar
+    image: traccar
+    build: .
+    ports:
+      - 8082:8082
+      - 5000-5150:5000-5150
+      - 5000-5150:5000-5150/udp
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/docker/traccar/logs:/opt/traccar/logs:rw
+      - /var/docker/traccar/traccar.xml:/opt/traccar/conf/traccar.xml:ro
+    restart: always

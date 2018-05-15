@@ -1,0 +1,32 @@
+--- load.js.origin	2018-05-14 19:58:26.477608829 -0400
++++ load.js	2018-05-14 20:34:45.752317323 -0400
+@@ -9,9 +9,11 @@
+         document.head.appendChild(link);
+     }
+ 
+-    function addScriptFile(file) {
++    function addScriptFile(file,callback=null) {
+         var script = document.createElement('script');
+         script.setAttribute('src', file);
++        if(callback)
++            script.onload = callback;
+         script.async = false;
+         document.head.appendChild(script);
+     }
+@@ -148,11 +150,14 @@
+     olVersion = '4.6.4';
+     proj4jsVersion = '2.4.4';
+ 
++    var fix_extjs_on_firefox = function(){
++        Ext.define('Mb.override.dom.Element',{override:'Ext.dom.Element'},function(){var additiveEvents=this.prototype.additiveEvents,eventMap=this.prototype.eventMap;if(Ext.supports.TouchEvents&&Ext.firefoxVersion>=52&&Ext.os.is.Desktop){eventMap['touchstart']='mousedown';eventMap['touchmove']='mousemove';eventMap['touchend']='mouseup';eventMap['touchcancel']='mouseup';eventMap['click']='click';eventMap['dblclick']='dblclick';additiveEvents['mousedown']='mousedown';additiveEvents['mousemove']='mousemove';additiveEvents['mouseup']='mouseup';additiveEvents['touchstart']='touchstart';additiveEvents['touchmove']='touchmove';additiveEvents['touchend']='touchend';additiveEvents['touchcancel']='touchcancel';additiveEvents['pointerdown']='mousedown';additiveEvents['pointermove']='mousemove';additiveEvents['pointerup']='mouseup';additiveEvents['pointercancel']='mouseup';}});
++    }
+     if (debugMode) {
+-        addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/ext-all-debug.js');
++        addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/ext-all-debug.js',fix_extjs_on_firefox);
+         addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/packages/charts/classic/charts-debug.js');
+     } else {
+-        addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/ext-all.js');
++        addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/ext-all.js',fix_extjs_on_firefox);
+         addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/packages/charts/classic/charts.js');
+     }
+     addScriptFile('//cdnjs.cloudflare.com/ajax/libs/extjs/' + extjsVersion + '/classic/locale/locale-' + locale.languages[locale.language].code + '.js');
